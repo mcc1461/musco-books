@@ -25,13 +25,6 @@ export default function Login() {
   const passwordInputRef = useRef < TextInput > null;
 
   const handleLogin = () => {
-    setIsLoading(true);
-    // … your auth logic …
-    setIsLoading(false);
-  };
-
-  const goToSignUp = () => {
-    router.push("/signup");
   };
 
   return (

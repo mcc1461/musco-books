@@ -24,8 +24,12 @@ export default function SignUp() {
   const [isLoading, setIsLoading] = useState(false);
   const passwordInputRef = useRef < TextInput > null;
 
+  const { userIt, sayHello } = useAuthStore.getState();
+  console.log("User from store:", userIt);
+
   const handleSignUp = () => {
     setIsLoading(true);
+    sayHello();
     // … your sign-up logic …
     setIsLoading(false);
   };
