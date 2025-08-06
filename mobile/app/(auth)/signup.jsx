@@ -1,4 +1,4 @@
-// SignUp.tsx
+// File: mobile/app/(auth)/signup.jsx
 import React, { useRef, useState } from "react";
 import {
   Text,
@@ -8,12 +8,14 @@ import {
   ActivityIndicator,
   KeyboardAvoidingView,
   Platform,
+  Alert,
 } from "react-native";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { useRouter } from "expo-router";
 
 import COLORS from "../../constants/colors";
 import styles from "../../assets/styles/signup.styles";
+import { useAuthStore } from "../../store/authStore";
 
 export default function SignUp() {
   const router = useRouter();
@@ -22,15 +24,30 @@ export default function SignUp() {
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const passwordInputRef = useRef < TextInput > null;
+  const passwordInputRef = useRef<TextInput>(null);
 
-  const { userIt, sayHello } = useAuthStore.getState();
-  console.log("User from store:", userIt);
+  const user = useAuthStore((state) => state.user);
+  const register = useAuthStore((state) => state.register);
 
-  const handleSignUp = () => {
+  const handleSignUp = async () => {
     setIsLoading(true);
-    sayHello();
-    // … your sign-up logic …
+    console.log("✅ handleSignUp tetiklendi");
+    const result = await register (username, email, password);
+    if (result.success) {
+      console.log("✅ Registration successful:", result.user);
+      Alert.alert(
+        "Registration Successful",
+        `Welcome, ${result.user.username}!`,
+        [
+          {
+            text: "OK",
+            onPress: () => {
+              router.push("/(auth)"); // Navigate to login page after successful registration
+            }
+          }
+        ]
+      );
+    }
     setIsLoading(false);
   };
 
