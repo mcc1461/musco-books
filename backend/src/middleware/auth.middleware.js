@@ -19,35 +19,23 @@ import User from "../models/User.js"; // 1. Import your User model
 // Middleware to protect routes
 const protectRoute = async (req, res, next) => {
   try {
-    // 1) Grab the header
-    const authHeader = req.headers["authorization"];
-    // 2) Format: "Bearer
-    const token = authHeader && authHeader.split(" ")[1];
-    if (!token) {
-      // No token → 401
-      return res
-        .status(401)
-        .json({ message: "No authorization token, access denied" });
-    }
-    // 3) Verify it
-    const decoded = jwt.verify(token, process.env.JWT_SECRET, {
-      expiresIn: "15d",
-    });
+    // get token
+    const token = req.header("Authorization").replace("Bearer ", "");
+    if (!token) return res.status(401).json({ message: "No authentication token, access denied" });
 
-    // 4) Check if the user exists
+    // verify token
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+
+    // find user
     const user = await User.findById(decoded.userId).select("-password");
+    if (!user) return res.status(401).json({ message: "Token is not valid" });
 
-    if (!user) {
-      // User not found → 403
-      return res.status(403).json({ message: "User not found" });
-    }
-
-    // 5) Attach the user to the request object
     req.user = user;
     next();
   } catch (error) {
-    console.error("Error in protectRoute middleware:", error);
-    res.status(500).json({ message: "Internal server error" });
+    console.error("Authentication error:", error.message);
+    res.status(401).json({ message: "Token is not valid" });
   }
 };
+
 export default protectRoute;
