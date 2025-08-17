@@ -9,10 +9,14 @@ import bookRoutes from "./routes/bookRoutes.js";
 import { connectDB } from "./lib/db.js";
 
 const app = express();
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 3011;
 
 job.start();
-app.use(express.json());
+
+// Body parser limit ayarları
+app.use(express.json({ limit: "50mb" }));
+app.use(express.urlencoded({ limit: "50mb", extended: true }));
+
 app.use(cors());
 
 app.use("/api/auth", authRoutes);
@@ -22,4 +26,3 @@ app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
   connectDB();
 });
-

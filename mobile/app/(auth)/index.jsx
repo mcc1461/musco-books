@@ -24,7 +24,20 @@ export default function Login() {
   const [isLoading, setIsLoading] = useState(false);
   const passwordInputRef = useRef < TextInput > null;
 
-  const handleLogin = () => {
+  const goToForgotPassword = () => {
+    router.push("/(auth)/forgot-password");
+  };
+  const goToSignUp = () => {
+    router.push("/(auth)/signup");
+  };
+  const handleLogin = async () => {
+    setIsLoading(true);
+    console.log("✅ handleLogin tetiklendi");
+    // Simulate login process
+    await new Promise((resolve) => setTimeout(resolve, 2000));
+    console.log("✅ Login successful");
+    setIsLoading(false);
+    router.push("/(tabs)/home"); // Navigate to home after successful login
   };
 
   return (
